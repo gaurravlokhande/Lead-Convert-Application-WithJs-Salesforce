@@ -1,3 +1,22 @@
 <template>
-
+    <lightning-card title="Basic Information">
+        <div class="slds-p-around_medium">
+            <lightning-input name="firstname" label="First Name" value={firstname}
+                onchange={onInputChange}></lightning-input>
+            <lightning-input name="lastname" label="Last Name" value={lastname}
+                onchange={onInputChange}></lightning-input>
+            <lightning-input name="mobile" label="Mobile" value={mobile} onchange={onInputChange}></lightning-input>
+            <lightning-input name="email" label="Email" value={email} onchange={onInputChange}></lightning-input>
+            <lightning-combobox name="category" label="Category" value={category} placeholder="Hot"
+                options={categoryOptions} onchange={onInputChange}></lightning-combobox>
+            <lightning-combobox name="leadsource" label="Lead Source" value={leadsource} placeholder="Refrence Data"
+                options={leadsourceOptions} onchange={onInputChange}></lightning-combobox>
+            <lightning-combobox name="mediatype" label="Media Type" value={mediatype} placeholder="Team Self Data"
+                options={mediatypeOptions} onchange={onInputChange}></lightning-combobox>
+        </div>
+        <div class="buttons">
+            <lightning-button variant="base" label="Cancel" onclick={clearFields}></lightning-button>
+            <lightning-button variant="brand" label="Create Lead" onclick={handleCreateLeadButton}></lightning-button>
+        </div>
+    </lightning-card>
 </template>

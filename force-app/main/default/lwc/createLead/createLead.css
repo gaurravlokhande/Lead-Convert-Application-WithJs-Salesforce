@@ -1,0 +1,10 @@
+.title{
+    color: rgb(25, 84, 173);
+    margin-left: 10px;
+}
+.buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+}
