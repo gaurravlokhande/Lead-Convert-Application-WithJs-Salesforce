@@ -25,10 +25,89 @@
     margin-right: 10px;
     padding-left: 10px;
 }
+.myclass-slds-docked-form-footer{
+    position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-top: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+        z-index: 999;
+}
+/* --------------- */
+.modal {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+}
 
+/* call not pivcked template code here */
+
+.mainclassof {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 13px;
+
+}
+
+.leadid {
+    color: #007ACC;
+}
+
+/* timeboxex styling */
+
+.time-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="number"],
+select {
+    width: 50px;
+    padding: 5px;
+    margin: 0 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.buttonupdate {
+    width: 85%;
+    padding: 7px;
+    height: 20%;
+    background-color: #007ACC;
+    color: #FFFCFB;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 3px;
+    margin-left: 7%;
+    margin-top: 10px;
+}
+.cancel{
+    display: flex;
+    justify-content: left;
+}
+/* --------------- */
 .filter-icon {
-    margin-top: 19px;
+    margin-top: 24px;
+    margin-right: 15px;
+}
+.Sort-icon{
+    margin-top: 24px;
+    margin-right: 15px;
+}
+.sortby-close{
+    display: flex;
+    justify-content: space-between;
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 .selectallnewsuspect{
@@ -48,6 +127,32 @@
     flex-direction: row;
     margin-bottom: 20px;
 }
+.clearicon {
+    align-items: flex-end;
+}
+.callicon{
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* screenthree==---------------------- */
 .tabset{

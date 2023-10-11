@@ -7,12 +7,22 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class CreateLead extends NavigationMixin(LightningElement) {
 
+    connectedCallback(){
+        this.OnSearchInLeadData();
+        this.showsearchbar = true;
+    }
+
+
+    // templates
     @track CreateRecordTemplate = false;
     @track ShowDetaisOfCreatedRecords = true;
     @track FilterScreenThree = false;
 
+    @track dockedfrombottom = false;
+    @track isCallNotPickedModalOpen = false;
+    
 
-
+    // for S1
     @track firstname = '';
     @track lastname = '';
     @track mobile = '';
@@ -20,7 +30,33 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
     @track category = '';
     @track leadsource = '';
     @track mediatype = '';
+    @track StatusValue = '';
 
+    // For S2
+    @track StoreSearchedLeadData = [];
+    @track searchbarvalue = '';
+    @track CheckboxValue;
+    @track RadiosortValue;
+
+    // For S3
+    @track oncheckedNewBusiness;
+    @track oncheckedExistingCustomer;
+    @track oncheckedPartnerReferral;
+    @track storebusinessvalue = '';
+
+
+
+
+
+    // Screen 1 Field Options
+    get StatusOptions() {
+         return [
+             { label: 'Online', value: 'Online' },
+             { label: 'SMS', value: 'SMS' },
+             { label: 'Printer', value: 'Printer' },
+        ];
+    }
+    
     get categoryOptions() {
         return [
             { label: 'New Business', value: 'New Business' },
@@ -31,7 +67,6 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
             { label: 'Other', value: 'Other' },
         ];
     }
-
     get LeadsourceOptions() {
         return [
             { label: 'Web', value: 'Web' },
@@ -42,7 +77,6 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
             { label: 'Other', value: 'Other' },
         ];
     }
-
     get MediatypeOptions() {
         return [
             { label: 'Email', value: 'Email' },
@@ -56,6 +90,78 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
         ];
     }
     
+    // Screen 2 Sort Radio Options
+     get radioSortOptions() {
+        return [
+            { label: 'Newest to Oldest', value: 'Newest to Oldest' },
+            { label: 'Oldest to Newest', value: 'Oldest to Newest' },
+            { label: 'Property Type', value: 'Property Type' },
+            { label: 'Lead Status', value: 'Lead Status' },
+            { label: 'Project Name', value: 'Project Name' },
+            { label: 'Location', value: 'Location' },
+             { label: 'Media Type', value: 'Media Type' },
+            
+        ];
+    }
+      
+
+
+    // Screen 1 Create Record Method
+    async  CreateLeadRecordFunction() {
+      await CreateLeadRecord({FirstName: this.firstname , LastName: this.lastname, Mobile: this.mobile, Email: this.email, Category: this.category, LeadSource: this.leadsource, MediaType: this.mediatype, status:this.StatusValue})
+            .then((result) => {
+            this.dispatchEvent(new ShowToastEvent({
+                title: "Record Created",
+                message: result,
+                variant: "success"
+            }));
+                this.CancleRecordCreation();
+                this.CreateRecordTemplate = false;
+                this.ShowDetaisOfCreatedRecords = true;
+                this.OnSearchInLeadData();
+                return refreshApex(this.StoreSearchedLeadData); 
+               
+                
+            }).catch((error) => {
+            this.dispatchEvent(new ShowToastEvent({
+                title: "Error In record Creation",
+                message: error.body.message,
+                variant: "error"
+            }));
+        });
+    }
+
+    // Screen 2 Search method
+    OnSearchInLeadData(){
+          SearchLeadsRecord({ searchinit:this.searchbarvalue })
+                .then((result) => {
+                    this.StoreSearchedLeadData = result;
+                }).catch((error) => {
+                    this.StoreSearchedLeadData = error;
+                });
+        }
+        
+
+    // Record Page Navigation Screen 2 
+      onclickFirstAndLastName(event) {
+
+        const recordId = event.currentTarget.dataset.id;
+
+        this[NavigationMixin.Navigate]({
+            type: "standard__recordPage",
+            attributes: {
+                actionName: "view",
+                recordId: recordId,
+                objectApiName: "Lead"
+            }
+        });
+        
+    }
+
+
+    
+    
+    //Screen 1 Fields
     onFirstName(event) {
         this.firstname = event.target.value;
     }
@@ -84,33 +190,28 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
         this.mediatype = event.target.value;
     }
 
-
-    // record Create btn
-  async  handleCreateLeadButton() {
-    await  CreateLeadRecord({FirstName: this.firstname , LastName: this.lastname, Mobile: this.mobile, Email: this.email, Category: this.category, LeadSource: this.leadsource, MediaType: this.mediatype})
-            .then((result) => {
-            this.dispatchEvent(new ShowToastEvent({
-                title: "Record Created",
-                message: result,
-                variant: "success"
-            }));
-                this.CancleRecordCreation();
-                this.CreateRecordTemplate = false;
-                this.ShowDetaisOfCreatedRecords = true;
-                this.OnSearchInLeadData();
-                return refreshApex(this.StoreSearchedLeadData); 
-               
-                
-            }).catch((error) => {
-            this.dispatchEvent(new ShowToastEvent({
-                title: "Error In record Creation",
-                message: error.body.message,
-                variant: "error"
-            }));
-        });
+    onStatuschange(event) {
+        this.StatusValue = event.target.value;
     }
 
-    // record cancle btn
+    //Screen 2 Fields
+    OnSearchBarValueChange(event){
+         this.searchbarvalue = event.target.value;
+         this.OnSearchInLeadData();     
+    }
+    
+    //Screen 3 Fields
+    oncheckboxchange(event) {
+        this.CheckboxValue = event.target.value;
+    }
+
+
+
+    //Screen 1 Buttons
+    handleCreateLeadButton() {
+        this.CreateLeadRecordFunction();
+    }
+
     handleCancleButton() {
       this.CancleRecordCreation();
     }
@@ -125,136 +226,73 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
          this.mediatype = '';
     }
 
-
-    // Screen two Started--------------------------------------------------------------------------------
-
-    connectedCallback(){
-        this.OnSearchInLeadData();
-        this.showsearchbar = true;
-    }
-
-
-    @track searchbarvalue = '';
-    @track StoreSearchedLeadData = [];
-    @track CheckboxValue;
-
-    @track oncheckedNewBusiness;
-    @track oncheckedExistingCustomer;
-    @track oncheckedPartnerReferral;
-
-
-     OnSearchBarValueChange(event){
-         this.searchbarvalue = event.target.value;
-         this.OnSearchInLeadData();     
-     }
-    
-    
-     OnSearchInLeadData(){
-          SearchLeadsRecord({ searchinit:this.searchbarvalue })
-                .then((result) => {
-                    this.StoreSearchedLeadData = result;
-                }).catch((error) => {
-                    this.StoreSearchedLeadData = error;
-                });
-        }
-        
-    
-    onclickFirstAndLastName(event) {
-
-        const recordId = event.currentTarget.dataset.id;
-
-        this[NavigationMixin.Navigate]({
-            type: "standard__recordPage",
-            attributes: {
-                actionName: "view",
-                recordId: recordId,
-                objectApiName: "Lead"
-            }
-        });
-        
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    oncheckboxchange(event) {
-        this.CheckboxValue = event.target.value;
-     }
-    
-     onSelectAllButton() {
-         
+     //Screen 2 Buttons
+    onSelectAllButton() {
+               
     }
        
-     onNewSuspectButton() {
+    onNewSuspectButton() {
          this.ShowDetaisOfCreatedRecords = false;
          this.CreateRecordTemplate = true;
-        }
-    
+    }
     
     onClickOfFilterIcon() {
         this.FilterScreenThree = true;
         this.ShowDetaisOfCreatedRecords = false;
     }
 
+    onclickofSortFromBottom() {
+        this.dockedfrombottom = true;
+    }
 
-    // third filter page stated here-----------------------------------------------------------
+    onSelectRadioSortbyValue(event) {
+        this.RadiosortValue = event.target.value;
 
+        this.dockedfrombottom = false;
+        this.ShowDetaisOfCreatedRecords = true;
 
+        if (this.RadiosortValue === 'Lead Status') {
+            this.searchbarvalue = 'Existing Customer';
+            this.OnSearchInLeadData(); 
+        }
+    }
+
+    onclickOfCallIcon() {
+        this.isCallNotPickedModalOpen = true;
+    }
+
+    onClickCloseCallNotPicked() {
+        this.isCallNotPickedModalOpen = false;
+    }
+
+    // Screen 3 Buttons
     onClickOfCloseIcon() {
         this.FilterScreenThree = false;
         this.ShowDetaisOfCreatedRecords = true;
     }
    
-
     onClickResetButton() {
      this.oncheckedNewBusiness = false;
      this.oncheckedExistingCustomer = false;
      this.oncheckedPartnerReferral = false;
     }
 
-
-
-    @track storebusinessvalue = '';
-   
     oncheckedNewBusiness() {
         this.storebusinessvalue = true;
     }
    
-
-   onClickFilterButton() {
+    onClickFilterButton() {
     this.FilterScreenThree = false;
     this.ShowDetaisOfCreatedRecords = true;
 
     if (this.storebusinessvalue != null) {
         this.searchbarvalue = 'New Business';
         this.OnSearchInLeadData(); 
+        }
     }
-}
-
-
-    
-    //  fourth screen started here ------------------------------------------------------------
-
-
-
-
-
-
-
-
-
   
 
   
-
-
-
 
 }
 
