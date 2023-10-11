@@ -8,3 +8,59 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+
+
+
+
+
+/* second screen */
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    flex: 1;
+    margin-right: 10px;
+    padding-left: 10px;
+}
+
+.filter-icon {
+    margin-top: 19px;
+    margin-right: 10px;
+}
+
+.selectallnewsuspect{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.container{
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+.slds-box{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+/* screenthree==---------------------- */
+.tabset{
+    margin-top: 10px;
+}
+.closeicon{
+    margin-top: 18px;
+    margin-right: 10px;
+}
+.buttonsscreenthree{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 50%;
+}

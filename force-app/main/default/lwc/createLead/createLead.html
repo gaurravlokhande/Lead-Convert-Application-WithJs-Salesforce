@@ -1,22 +1,197 @@
 <template>
-    <lightning-card title="Basic Information">
-        <div class="slds-p-around_medium">
-            <lightning-input name="firstname" label="First Name" value={firstname}
-                onchange={onInputChange}></lightning-input>
-            <lightning-input name="lastname" label="Last Name" value={lastname}
-                onchange={onInputChange}></lightning-input>
-            <lightning-input name="mobile" label="Mobile" value={mobile} onchange={onInputChange}></lightning-input>
-            <lightning-input name="email" label="Email" value={email} onchange={onInputChange}></lightning-input>
-            <lightning-combobox name="category" label="Category" value={category} placeholder="Hot"
-                options={categoryOptions} onchange={onInputChange}></lightning-combobox>
-            <lightning-combobox name="leadsource" label="Lead Source" value={leadsource} placeholder="Refrence Data"
-                options={leadsourceOptions} onchange={onInputChange}></lightning-combobox>
-            <lightning-combobox name="mediatype" label="Media Type" value={mediatype} placeholder="Team Self Data"
-                options={mediatypeOptions} onchange={onInputChange}></lightning-combobox>
-        </div>
-        <div class="buttons">
-            <lightning-button variant="base" label="Cancel" onclick={clearFields}></lightning-button>
-            <lightning-button variant="brand" label="Create Lead" onclick={handleCreateLeadButton}></lightning-button>
-        </div>
+    <lightning-card>
+
+        <template if:true={CreateRecordTemplate}>
+            <!-- because of company mandatory field i choose custome fields over record edit form-->
+            <div class="title">
+                <h1><b>Basic Information:</b></h1>
+            </div>
+
+            <div class="slds-p-around_medium">
+
+                <lightning-input type="text" label="First Name" value={firstname}
+                    onchange={onFirstName}></lightning-input>
+
+                <lightning-input type="text" label="Last Name" value={lastname} onchange={onLastName}></lightning-input>
+
+                <lightning-input type="text" label="Mobile" value={mobile} onchange={onMobile}></lightning-input>
+
+                <lightning-input type="text" label="Email" value={email} onchange={onEmail}></lightning-input>
+
+                <lightning-combobox label="Category" value={category} placeholder="Hot" options={categoryOptions}
+                    onchange={onCategory}></lightning-combobox>
+
+                <lightning-combobox label="Lead Source" value={leadsource} placeholder="Refrence Data"
+                    options={LeadsourceOptions} onchange={onLeadsource}></lightning-combobox>
+
+                <lightning-combobox label="Media Type" value={mediatype} placeholder="Team Self Data"
+                    options={MediatypeOptions} onchange={onMediatype}></lightning-combobox>
+
+            </div>
+
+            <div class="buttons">
+                <lightning-button variant="base" label="Cancle" onclick={handleCancleButton}></lightning-button>
+
+                <lightning-button variant="brand" label="Create Lead"
+                    onclick={handleCreateLeadButton}></lightning-button>
+            </div>
+        </template>
+
+
+        <!-- Screen 2 Started Here -->
+
+
+        <template if:true={ShowDetaisOfCreatedRecords}>
+
+            <div class="search-container">
+
+                <lightning-input class="search-bar" type="search" name="search" placeholder="Search"
+                    value={searchbarvalue} onchange={OnSearchBarValueChange}></lightning-input>
+
+                <lightning-icon class="filter-icon " icon-name='utility:slider' alternative-text='slider'
+                    variant='success' size='small' title='slider' onclick={onClickOfFilterIcon}></lightning-icon>
+            </div>
+
+            <div class="selectallnewsuspect">
+                <lightning-button variant="base" label="Select All" onclick={onSelectAllButton}></lightning-button>
+                <lightning-button variant="base" label="New Suspect" onclick={onNewSuspectButton}></lightning-button>
+            </div>
+
+
+
+            <template for:each={StoreSearchedLeadData} for:item="lead" for:index="index">
+
+                <div class="container" key={lead.Id}>
+                    <div class="checkbox">
+                        <lightning-input type="checkbox" value={CheckboxValue}
+                            onclick={oncheckboxchange}></lightning-input>
+                    </div>
+
+                    <div class="details">
+                        <h3><b>{lead.Id}</b></h3>
+                        <h1 data-id={lead.Id} onclick={onclickFirstAndLastName}>{lead.FirstName} {lead.LastName}</h1>
+                        <h1>{lead.Category__c}</h1>
+                        <h1>{lead.CreatedDate}</h1>
+                        <h1><b>Message / Query:</b> I am looking for 2 BHk Flat...</h1>
+                    </div>
+
+
+                    <div class="fire-icon">
+                        <span class="icon" key={lead.Id}>🔥</span>
+                    </div>
+
+                    <div class="smsicon">
+                        <span class="icon" key={lead.Id}>
+                            <h1 style="background-color: yellow;">SMS</h1>
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="slds-box slds-box_xx-small" key={lead.Id}>
+                    <lightning-icon icon-name='utility:note' alternative-text='note' variant='error' size='small'
+                        title='note'></lightning-icon>
+
+                    <lightning-icon icon-name='utility:event' alternative-text='event' size='small'
+                        title='event'></lightning-icon>
+
+                    <lightning-icon icon-name='utility:anywhere_chat' alternative-text='anywhere_chat' size='small'
+                        title='anywhere_chat'></lightning-icon>
+
+
+                    <lightning-icon icon-name='utility:call' alternative-text='call' size='small'
+                        title='call'></lightning-icon>
+
+                </div>
+
+            </template>
+        </template>
+
+
+
+        <!-- Screen 3 Started Here -->
+
+
+        <template if:true={FilterScreenThree}>
+
+            <div class="search-container">
+
+                <lightning-input class="search-bar" type="search" name="search" placeholder="Search"
+                    value={searchbarvalue} onchange={OnSearchBarValueChange}></lightning-input>
+
+                <div class="closeicon">
+                    <lightning-icon icon-name='utility:close' alternative-text='close' size='small' title='close'
+                        onclick={onClickOfCloseIcon}></lightning-icon>
+                </div>
+            </div>
+
+            <div class="tabset">
+                <lightning-tabset variant="vertical">
+
+                    <lightning-tab label="Category">
+
+                        <lightning-input type="checkbox" label="New Business"
+                            onclick={oncheckedNewBusiness}></lightning-input>
+
+                        <lightning-input type="checkbox" label="Existing Customer"
+                            onclick={oncheckedExistingCustomer}></lightning-input>
+
+                        <lightning-input type="checkbox" label="Partner Referral"
+                            onclick={oncheckedPartnerReferral}></lightning-input>
+                        <lightning-input type="checkbox" label="Marketing Campaign"
+                            checked={oncheckedMarketingCampaign}></lightning-input>
+                        <lightning-input type="checkbox" label="Employee Referral"
+                            checked={oncheckedEmployeeReferral}></lightning-input>
+                        <lightning-input type="checkbox" label="Other" onclick={oncheckedOther}></lightning-input>
+                    </lightning-tab>
+
+
+                    <lightning-tab label="Lead Source">
+                        <lightning-input type="checkbox" label="Web" checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Phone Inquiry"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Partner Referral"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Finished"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Purchased List"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Other" checked={oncheckednewbusiness}></lightning-input>
+                    </lightning-tab>
+
+                    <lightning-tab label="Media Type">
+                        <lightning-input type="checkbox" label="Email" checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Phone Call"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Social Media"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Website"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Online Advertisement"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Television"
+                            checked={oncheckednewbusiness}></lightning-input>
+                        <lightning-input type="checkbox" label="Event Sponsorship"
+                            checked={oncheckednewbusiness}></lightning-input>
+                    </lightning-tab>
+
+                </lightning-tabset>
+
+
+                <div class="buttonsscreenthree">
+                    <lightning-button variant="base" label="Reset" onclick={onClickResetButton}></lightning-button>
+
+                    <lightning-button variant="brand" label="Filter" onclick={onClickFilterButton}></lightning-button>
+                </div>
+            </div>
+
+        </template>
+
+
+
+        <!-- Fourth Screen Started Here -->
+
+
     </lightning-card>
+
 </template>
