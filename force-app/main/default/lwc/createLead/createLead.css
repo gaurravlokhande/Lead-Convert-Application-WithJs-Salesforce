@@ -9,10 +9,6 @@
     margin-right: 10px;
 }
 
-
-
-
-
 /* second screen */
 
 .search-container {
@@ -36,16 +32,17 @@
         text-align: left;
         z-index: 999;
 }
-/* --------------- */
+
+
+/* ------------------------------------------------------------------ */
 .modal {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: white;
+    top: -30%
 }
 
-/* call not pivcked template code here */
 
 .mainclassof {
     display: flex;
@@ -77,10 +74,9 @@ select {
     border-radius: 4px;
     margin-top: 10px;
 }
-.buttonupdate {
+.buttonsubmit {
     width: 85%;
     padding: 7px;
-    height: 20%;
     background-color: #007ACC;
     color: #FFFCFB;
     border: none;
@@ -90,11 +86,17 @@ select {
     margin-left: 7%;
     margin-top: 10px;
 }
-.cancel{
-    display: flex;
-    justify-content: left;
-}
-/* --------------- */
+
+
+
+/* ------------------------------------------------------------------------------ */
+
+
+
+
+
+
+
 .filter-icon {
     margin-top: 24px;
     margin-right: 15px;
@@ -121,6 +123,12 @@ select {
     justify-content: space-around;
     margin-bottom: 10px;
 }
+.checkbox{
+    margin-left: 20px;
+}
+.smsicon{
+    margin-right: 15px;
+}
 .slds-box{
     display: flex;
     justify-content: space-around;
@@ -133,26 +141,6 @@ select {
 .callicon{
     text-align: center;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* screenthree==---------------------- */
 .tabset{
@@ -169,3 +157,318 @@ select {
     margin-right: 10px;
     margin-top: 50%;
 }
+
+
+
+
+
+
+.wholediv {
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.idheading {
+    color: white;
+    font: bold;
+    font-size: medium;
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.explaincreation {
+    font: bold;
+    color: white;
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wholeststusdiv {
+    margin-left: 13px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    margin-top: 6px;
+
+}
+
+.basicdetailupdate {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.basicdetail {
+    color: rgb(7, 87, 152);
+}
+
+.update {
+    color: rgb(7, 87, 152);
+}
+
+.wholename {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.wholeemail {
+    margin-left: 10px;
+    margin-top: 10px;
+
+}
+
+.wholecatagory {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.projectrequirement {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    margin-left: 10px;
+margin-top: 10px;
+}
+
+.proreq {
+    color: rgb(7, 87, 152);
+}
+
+
+.projname {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.locationss {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.budgetsss {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 100px;
+
+}
+
+.output {
+    margin-left: 10px;
+    margin-right: 100px;
+}
+
+.container2 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading2 {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 135px;
+
+}
+
+.output2 {
+    margin-left: 10px;
+    margin-right: 135px;
+}
+
+.urldiv {
+    color: rgb(7, 87, 152);
+    margin-left: 10px;
+}
+
+.container3 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading3 {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 78px;
+
+}
+
+.output3 {
+    margin-left: 10px;
+    margin-right: 78px;
+}
+
+.container4 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.heading4 {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 113px;
+
+}
+
+.output4 {
+    margin-left: 10px;
+    margin-right: 113px;
+}
+
+.icontext {
+    display: flex;
+    justify-content: space-between;
+}
+
+.imgs {
+    width: 65%;
+    height: 80%;
+    margin-right: 40px;
+}
+
+.iconwp {
+    width: 8%;
+    height: 10%;
+    margin-right: 10px;
+    margin-top: 20px;
+}
+
+.wholecontact {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.buttonupdate {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.combobox {
+    margin-right: 40px;
+    margin-left: 40px;
+}
+
+.closebutton {
+    margin-left: 3000;
+}
+
+
+.cancel {
+    height: 17px;
+    width: 17px;
+    margin-left: 96%;
+}
+
+.buttonupdate {
+    width: 85%;
+    padding: 7px;
+    background-color: #007ACC;
+    color: #FFFCFB;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 3px;
+    margin-left: 7%;
+}
+
+
+
+
+
+/* page2styling */
+
+.upcomingevents {
+    color: gray;
+    margin-left: 10px;
+}
+
+.firstevent {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.icondiv1 {
+    margin-top: 15px;
+}
+
+.allnodiv {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.sitevisit1 {
+    font-size: large;
+    color: #007ACC;
+    margin-left: 25px;
+}
+
+.Followups1 {
+    font-size: large;
+    color: rgb(35, 165, 35);
+    margin-left: 25px;
+}
+
+.facetoface1 {
+    font-size: large;
+    color: rgb(216, 60, 13);
+    margin-left: 25px;
+}
+
+.pasthistory {
+    color: #007ACC;
+    margin-left: 10px;
+}
+
+.lastbutton {
+    margin-top: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+/*                 */
+.headlead{
+    display: flex;
+  justify-content: center;
+}
+.leadintrested{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.buttonintrested{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+
+
+

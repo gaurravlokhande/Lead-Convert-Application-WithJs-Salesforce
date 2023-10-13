@@ -2,8 +2,13 @@ import { LightningElement, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import CreateLeadRecord from '@salesforce/apex/Leads.CreateLeads';
 import SearchLeadsRecord from '@salesforce/apex/Leads.SearchLeadsInData';
+import insertCallNote from '@salesforce/apex/Leads.updateLeadsDescription';
+import RejectReason from '@salesforce/apex/Leads.SelectRejectionReason';
+import updateintrestedlead from '@salesforce/apex/Leads.MarkLeadAsIntrested';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
+import wpicons from '@salesforce/resourceUrl/wpicon';
+import uparrowicon from '@salesforce/resourceUrl/uparrowicon';
 
 export default class CreateLead extends NavigationMixin(LightningElement) {
 
@@ -12,12 +17,20 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
         this.showsearchbar = true;
     }
 
+    wpicon = wpicons;
+    arrowicon = uparrowicon;
+
 
     // templates
     @track CreateRecordTemplate = false;
     @track ShowDetaisOfCreatedRecords = true;
     @track FilterScreenThree = false;
+    @track ShowRecordsInColumn = false;
+    @track ShowRejectReason = false;
+    @track MarkLeadAsIntrestedTemplate = false;
 
+    
+    // S2 templates
     @track dockedfrombottom = false;
     @track isCallNotPickedModalOpen = false;
     
@@ -36,17 +49,21 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
     @track StoreSearchedLeadData = [];
     @track searchbarvalue = '';
     @track CheckboxValue;
-    @track RadiosortValue;
+    @track RadiosortValue;;
+    @track CallNotes = '';
+    @track StoreCallNote = '';
+    @track CallId = '';
 
     // For S3
-    @track oncheckedNewBusiness;
-    @track oncheckedExistingCustomer;
-    @track oncheckedPartnerReferral;
-    @track storebusinessvalue = '';
+    @track NewBusinessCheckBox = false;
+    @track ExistingCustomerCheckbox = false;
+    @track Partnerreferralcheckbox = false;
+    @track searchbarvalue = '';
 
 
-
-
+    //S4
+    @track RejectionCategory;
+    @track RejectionReason;
 
     // Screen 1 Field Options
     get StatusOptions() {
@@ -99,11 +116,25 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
             { label: 'Lead Status', value: 'Lead Status' },
             { label: 'Project Name', value: 'Project Name' },
             { label: 'Location', value: 'Location' },
-             { label: 'Media Type', value: 'Media Type' },
+            { label: 'Media Type', value: 'Media Type' },
             
         ];
+     }
+    
+     get RejectionCategoryOptions() {
+        return [
+            { label: 'Budget', value: 'Budget' },
+            { label: 'Expired', value: 'Expired' },
+        ];
+     } 
+    
+     get RejectionReasonOptions() {
+        return [
+            { label: 'Low Budget', value: 'Low Budget' },
+            { label: 'Expired', value: 'Expired' },
+        ];
     }
-      
+
 
 
     // Screen 1 Create Record Method
@@ -118,10 +149,9 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
                 this.CancleRecordCreation();
                 this.CreateRecordTemplate = false;
                 this.ShowDetaisOfCreatedRecords = true;
+                this.refreshApexdata();
                 this.OnSearchInLeadData();
-                return refreshApex(this.StoreSearchedLeadData); 
-               
-                
+                  
             }).catch((error) => {
             this.dispatchEvent(new ShowToastEvent({
                 title: "Error In record Creation",
@@ -131,16 +161,56 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
         });
     }
 
+
+    refreshApexdata() {
+       return refreshApex(this.StoreSearchedLeadData);  
+    }
+
+
     // Screen 2 Search method
     OnSearchInLeadData(){
           SearchLeadsRecord({ searchinit:this.searchbarvalue })
                 .then((result) => {
                     this.StoreSearchedLeadData = result;
+                    this.refreshApexdata();
                 }).catch((error) => {
                     this.StoreSearchedLeadData = error;
                 });
-        }
-        
+    }
+  
+   
+
+    oninsertCallNote(event) {
+
+         this.CallId = event.currentTarget.dataset.Id
+
+        insertCallNote({ leadId: CallId ,callNote: this.CallNotes })
+        .then((result) => {
+            this.StoreCallNote = result;
+        }).catch((error) => {
+            this.StoreCallNote = error;
+        });
+    }
+   
+
+    async OnRejectReason() {
+        await RejectReason({ LeadIdss: this.CallId, SelectCategory: this.RejectionCategory, RejectionReason: this.RejectionReason })
+        .then((result) => {
+           this.dispatchEvent(new ShowToastEvent({
+               title: "reason Update Sucessfully",
+               message: "message",
+               variant: "success"
+           }));
+        }).catch((error) => {
+           this.dispatchEvent(new ShowToastEvent({
+               title: "reason Update failed",
+               message: "message",
+               variant: "error"
+           }));
+        });
+    }
+
+
 
     // Record Page Navigation Screen 2 
       onclickFirstAndLastName(event) {
@@ -199,12 +269,26 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
          this.searchbarvalue = event.target.value;
          this.OnSearchInLeadData();     
     }
+
+    onChangeCallNotes(event) {
+        this.CallNotes = event.targt.value;
+        this.oninsertCallNote();
+    }
     
     //Screen 3 Fields
     oncheckboxchange(event) {
-        this.CheckboxValue = event.target.value;
+        this.CheckboxValue = event.target.Checked;
     }
 
+
+    // Screen 4 Fields
+    onchangeRejectionCategory(event) {
+        this.RejectionCategory = event.target.value;
+    }
+
+    onchangeRejectionReason(event) {
+        this.RejectionReason = event.target.value;
+    }
 
 
     //Screen 1 Buttons
@@ -223,17 +307,28 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
          this.email = '';
          this.category = '';
          this.leadsource = '';
-         this.mediatype = '';
+        this.mediatype = '';
+        this.StatusValue = '';
     }
 
-     //Screen 2 Buttons
+    //Screen 2 Buttons
+    
+    OnClickOfLeadId() {
+        this.ShowRecordsInColumn = true;
+        this.ShowDetaisOfCreatedRecords = false;
+     }
+    
     onSelectAllButton() {
-               
+        this.CheckboxValue = true;
+    }
+    ondblclickonSelectAllButton(){
+         this.CheckboxValue = false;
     }
        
     onNewSuspectButton() {
-         this.ShowDetaisOfCreatedRecords = false;
-         this.CreateRecordTemplate = true;
+        this.ShowDetaisOfCreatedRecords = false;
+        this.CreateRecordTemplate = true;
+        this.dockedfrombottom = false;
     }
     
     onClickOfFilterIcon() {
@@ -251,10 +346,11 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
         this.dockedfrombottom = false;
         this.ShowDetaisOfCreatedRecords = true;
 
-        if (this.RadiosortValue === 'Lead Status') {
-            this.searchbarvalue = 'Existing Customer';
-            this.OnSearchInLeadData(); 
+        if (this.RadiosortValue = 'Newest to Oldest') {
+        this.searchbarvalue = 'Partner Referral'
+        this.OnSearchInLeadData();
         }
+      
     }
 
     onclickOfCallIcon() {
@@ -264,6 +360,34 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
     onClickCloseCallNotPicked() {
         this.isCallNotPickedModalOpen = false;
     }
+
+    onSubmitCallNotes() {
+        if (this.StoreCallNote.data) {
+            this.dispatchEvent(new ShowToastEvent({
+                title: "Feedback Submited Sucessfully",
+                message: "message",
+                variant: "success"
+            }));
+
+            this.isCallNotPickedModalOpen = false;
+            this.ShowDetaisOfCreatedRecords = true;
+
+        } else {
+            this.dispatchEvent(new ShowToastEvent({
+                title: "error happen while submitting record",
+                message: "message",
+                variant: "error"
+            }));
+        }
+            
+
+    }
+
+    onClickOfNoteIcon() {
+        this.ShowDetaisOfCreatedRecords = false;
+        this.MarkLeadAsIntrestedTemplate = true;          
+    }
+   
 
     // Screen 3 Buttons
     onClickOfCloseIcon() {
@@ -277,22 +401,214 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
      this.oncheckedPartnerReferral = false;
     }
 
-    oncheckedNewBusiness() {
-        this.storebusinessvalue = true;
-    }
    
-    onClickFilterButton() {
-    this.FilterScreenThree = false;
-    this.ShowDetaisOfCreatedRecords = true;
+    handleCheckboxChange(event) {
+        const checkboxName = event.target.label;
+        const isChecked = event.target.checked;
+        this.checkboxName = checkboxName;
+        this.isChecked = isChecked;
+    }
 
-    if (this.storebusinessvalue != null) {
-        this.searchbarvalue = 'New Business';
-        this.OnSearchInLeadData(); 
+    onClickFilterButton() {
+        this.FilterScreenThree = false;
+        this.ShowDetaisOfCreatedRecords = true;
+
+        if (this.checkboxName === 'New Business') {
+            this.NewBusinessCheckBox = this.isChecked;
+            this.searchbarvalue = 'New Business';
+            this.OnSearchInLeadData();
+        } else if (this.checkboxName === 'Existing Customer') {
+            this.ExistingCustomerCheckbox = this.isChecked;
+            this.searchbarvalue = 'Existing Customer';
+            this.OnSearchInLeadData();
+        } else if (this.checkboxName === 'Partner Referral') {
+            this.Partnerreferralcheckbox = this.isChecked;
+            this.searchbarvalue = 'Partner Referral';
+            this.OnSearchInLeadData();
         }
     }
+
+    //Screen 4 Buttons
+    onclickintrestedbtn() {
+        this.ShowRecordsInColumn = false;
+        this.ShowDetaisOfCreatedRecords = true;
+    }
+
+    onclickofrejectbtn() {
+        this.ShowRejectReason = true;
+    }
+
+    handleUpdateReasonButton() {
+      this.ShowRejectReason = false;
+        this.OnRejectReason();
+    }
+
+
+
+    // Screen 5 buttons
+
+    get Buyingtimeframeoptions() {
+    return [
+        { label: 'Immediate', value: 'immediate' },
+        { label: 'Within 3 months', value: '3months' },
+        { label: 'Within 6 months', value: '6months' },
+        { label: 'More than 6 months', value: 'more6months' },
+    ];
+}
+
+get Budgetoptions() {
+    return [
+        { label: 'Less than $50,000', value: '<50000' },
+        { label: '$50,000 - $100,000', value: '50000-100000' },
+        { label: '$100,000 - $200,000', value: '100000-200000' },
+        { label: 'More than $200,000', value: '>200000' },
+    ];
+}
+
+get PropertyTypeoptions() {
+    return [
+        { label: 'House', value: 'house' },
+        { label: 'Apartment', value: 'apartment' },
+        { label: 'Condo', value: 'condo' },
+    ];
+}
+
+get Locationoptions() {
+    return [
+        { label: 'Downtown', value: 'downtown' },
+        { label: 'Suburb', value: 'suburb' },
+        { label: 'Countryside', value: 'countryside' },
+    ];
+}
+
+get CallActionoptions() {
+    return [
+        { label: 'Call immediately', value: 'immediate' },
+        { label: 'Call within 24 hours', value: '24hours' },
+        { label: 'Call within 48 hours', value: '48hours' },
+        { label: 'No call required', value: 'nocall' },
+    ];
+}
+
+get MeetingLocationoptions() {
+    return [
+        { label: 'Office', value: 'office' },
+        { label: 'Coffee Shop', value: 'coffee-shop' },
+        { label: "Client's location", value: 'client-location' },
+        { label: 'Other', value: 'other' },
+    ];
+}
+
+get IcOfficeoptions() {
+    return [
+        { label: 'IC Office 1', value: 'office1' },
+        { label: 'IC Office 2', value: 'office2' },
+        { label: 'IC Office 3', value: 'office3' },
+    ];
+}
+
+
+
+
+
+    @track StoreLabelofLead;
+    
+
+
+
+
+    @track StoreBuyingtimeframevalue = '';
+    @track StoreBudgetValue = '';
+    @track StorePropertytypeValue = '';
+    @track StoreLocationValue = '';
+    @track StoreCallActionValue = '';
+    @track StoreMeetingLocationValue = '';
+    @track StoreIcOfficeValue = '';
+
+
+    handleChangeBuyingtimeframevalue(event) {
+       this.StoreBuyingtimeframevalue = event.target.value;
+    }
+
+    handleChangeBudgetValue(event) {
+      this.StoreBudgetValue = event.target.value;
+    }
+
+    handleChangePropertytypeValue(event) {
+       this.StorePropertytypeValue = event.target.value;
+    }
+
+    handleChangeLocationValue(event) {
+       this.StoreLocationValue = event.target.value;
+    }
+
+    handleChangeCallActionValue(event) {
+       this.StoreCallActionValue = event.target.value;
+    }
+
+    handleChangeMeetingLocationValue(event){
+       this.StoreMeetingLocationValue = event.target.value;
+    }
+
+    handleChangeIcOfficeValue(event) {
+        this.StoreIcOfficeValue = event.target.value;
+    }
   
 
-  
+  async IntrestedLeadMethod() {
+    try {
+        const result = await updateintrestedlead({
+            LeadIdInput: this.CallId,
+            BuyingTimeFrame: this.StoreBuyingtimeframevalue,
+            Budget: this.StoreBudgetValue,
+            PropertyType: this.StorePropertytypeValue,
+            Location: this.StoreLocationValue,
+            CallAction: this.StoreCallActionValue,
+            MeetingLocation: this.StoreMeetingLocationValue,
+            IcOffice: this.StoreIcOfficeValue
+        });
+        if (result) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: "Lead Moved to Prospect",
+                    message: "Lead was updated successfully.",
+                    variant: "success"
+                })
+            );
+        } else {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: "Error occurred",
+                    message: "There was an error updating the lead.",
+                    variant: "error"
+                })
+            );
+        }
+    } catch (error) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: "Error occurred",
+                message: error.message,
+                variant: "error"
+            })
+        );
+    }
+}
+
+    
+    handleMoveToPropspectLead() {
+        this.IntrestedLeadMethod();      
+    }
+    
+    handleCancleLeadIntrested() {
+    this.StoreBuyingtimeframevalue = '';
+    this.StoreBudgetValue = '';
+    this.StorePropertytypeValue = '';
+    this.StoreLocationValue = '';
+    this.StoreCallActionValue = '';
+    this.StoreMeetingLocationValue = '';
+    this.StoreIcOfficeValue = '';
+    }
 
 }
 

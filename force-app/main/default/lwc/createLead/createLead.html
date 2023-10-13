@@ -44,7 +44,8 @@
                     variant='success' size='small' title='slider' onclick={onClickOfFilterIcon}></lightning-icon>
             </div>
             <div class="selectallnewsuspect">
-                <lightning-button variant="base" label="Select All" onclick={onSelectAllButton}></lightning-button>
+                <lightning-button variant="base" label="Select All" onclick={onSelectAllButton}
+                    ondblclick={ondblclickonSelectAllButton}></lightning-button>
                 <lightning-button variant="base" label="New Suspect" onclick={onNewSuspectButton}></lightning-button>
             </div>
 
@@ -52,11 +53,11 @@
             <template for:each={StoreSearchedLeadData} for:item="lead" for:index="index">
                 <div class="container" key={lead.Id}>
                     <div class="checkbox">
-                        <lightning-input type="checkbox" value={CheckboxValue}
-                            onclick={oncheckboxchange}></lightning-input>
+                        <lightning-input type="checkbox" checked={CheckboxValue}
+                            onchange={oncheckboxchange}></lightning-input>
                     </div>
                     <div class="details">
-                        <h3><b>{lead.Id}</b></h3>
+                        <h3 onclick={OnClickOfLeadId}><b>{lead.Id}</b></h3>
                         <h1 data-id={lead.Id} onclick={onclickFirstAndLastName}>{lead.FirstName} {lead.LastName}</h1>
                         <h1>{lead.Category__c}</h1>
                         <h1>{lead.CreatedDate}</h1>
@@ -73,7 +74,7 @@
                 </div>
                 <div class="slds-box slds-box_xx-small" key={lead.Id}>
                     <lightning-icon icon-name='utility:note' alternative-text='note' variant='error' size='small'
-                        title='note'></lightning-icon>
+                        title='note' onclick={onClickOfNoteIcon}></lightning-icon>
                     <lightning-icon icon-name='utility:event' alternative-text='event' size='small'
                         title='event'></lightning-icon>
                     <lightning-icon icon-name='utility:anywhere_chat' alternative-text='anywhere_chat' size='small'
@@ -81,64 +82,74 @@
                     <lightning-icon icon-name='utility:call' alternative-text='call' size='small' title='call'
                         onclick={onclickOfCallIcon}></lightning-icon>
                 </div>
+
+
+
+                <!--  On Call Not Picked Start Here -->
+                <template if:true={isCallNotPickedModalOpen} for:each={StoreSearchedLeadData} for:item="calldata"
+                    for:index="index">
+                    <section class="modal" role="dialog" tabindex="-1" aria-modal="true" key={calldata.Id}
+                        aria-labelledby="modal-heading-01">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                                <lightning-icon class="cancel" onclick={onClickCloseCallNotPicked}
+                                    icon-name='utility:clear' alternative-text='clear' size='small'
+                                    title='clear'></lightning-icon>
+                                <div class="mainclassof">
+                                    <div class="callcuticon">
+                                        <lightning-icon icon-name='utility:end_call' alternative-text='end_call'
+                                            size='large' title='end_call'></lightning-icon>
+                                    </div>
+                                    <h1 class="leadid"><b> Lead ID: {calldata.Id}</b></h1>
+                                    <h6 class="callnotpicked"> <b>{calldata.Category__c}</b></h6>
+                                    <div class="textared">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control" data-id={calldata.Id}>
+                                                <textarea id="textarea-id-01" placeholder="Call Notes"
+                                                    class="slds-textarea" value={CallNotes}
+                                                    onchange={onChangeCallNotes}></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h1 class="tagline"><b>{calldata.CreatedDate}</b></h1>
+                                    <hr style="border-top: 2px solid #cccccc7f; margin-top: 7px;margin-bottom:2px">
+                                    <h3 class="leadid"><b> Choose another Date and Time</b></h3>
+                                    <div class="inputdate">
+                                        <lightning-input placeholder="dd/mm/yy" type="date" value={formattedDate}
+                                            onchange={handleDateChange}></lightning-input>
+                                    </div>
+                                    <div class="time-input">
+                                        <input type="number" min="1" max="12" step="1" placeholder="HH" value={hours}
+                                            oninput={handleHoursChange} />
+                                        <input type="number" min="0" max="59" step="1" placeholder="MM" value={minutes}
+                                            oninput={handleMinutesChange} />
+                                        <select value={amPm} onchange={handleAmPmChange}>
+                                            <option value="AM">AM</option>
+                                            <option value="PM">PM</option>
+                                        </select>
+                                    </div>
+                                    <button class="buttonsubmit" onclick={onSubmitCallNotes}>Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
+                <!--  On Call Not Picked  End here-->
+
             </template> <!-- Display Record Template  Start-->
         </template> <!-- Show Record Of Created Leads template Start -->
 
 
 
+
         <template if:true={dockedfrombottom}> <!-- Docked from Bottom radio Btn List / Template Start-->
             <div class="myclass-slds-docked-form-footer">
-                <lightning-radio-group name="radioGroup" label="Radio Group" options={radioSortOptions}
-                    value={RadiosortValue} type="radio" onclick={onSelectRadioSortbyValue}></lightning-radio-group>
+                <lightning-radio-group name="radioGroup" label="Sort by" options={radioSortOptions}
+                    value={RadiosortValue} type="radio" onchange={onSelectRadioSortbyValue}></lightning-radio-group>
             </div>
         </template><!-- Docked from Bottom radio Btn List / Template End-->
 
 
-        <template if:true={isCallNotPickedModalOpen}> <!-- Call Not Picked Template Start -->
-            <section class="modal" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01">
-                <div class="slds-modal__container">
-                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
-                        <lightning-icon class="cancel" onclick={onClickCloseCallNotPicked} icon-name='utility:clear'
-                            alternative-text='clear' size='small' title='clear'></lightning-icon>
-                        <div class="mainclassof">
-                            <div class="callcuticon">
-                                <lightning-icon icon-name='utility:end_call' alternative-text='end_call' size='large'
-                                    title='end_call'></lightning-icon>
-                            </div>
-                            <h1 class="leadid"><b> Lead ID: {Lead.Id}</b></h1>
-                            <h6 class="callnotpicked"> <b>{lead.MediaType__c}</b></h6>
-                            <div class="textared">
-                                <div class="slds-form-element">
-                                    <div class="slds-form-element__control">
-                                        <textarea id="textarea-id-01" placeholder="Call Notes"
-                                            class="slds-textarea"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <h1 class="tagline"><b>{lead.CreatedDate}</b></h1>
-                            <hr style="border-top: 2px solid #cccccc7f; margin-top: 7px;margin-bottom:2px">
-                            <h3 class="leadid"><b> Choose another Date and Time</b></h3>
-                            <div class="inputdate">
-                                <lightning-input placeholder="dd/mm/yy" type="date" value={formattedDate}
-                                    onchange={handleDateChange}></lightning-input>
-                            </div>
-                            <div class="time-input">
-                                <input type="number" min="1" max="12" step="1" placeholder="HH" value={hours}
-                                    oninput={handleHoursChange} />
-                                <input type="number" min="0" max="59" step="1" placeholder="MM" value={minutes}
-                                    oninput={handleMinutesChange} />
-                                <select value={amPm} onchange={handleAmPmChange}>
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
-                            </div>
-                            <button class="buttonupdate" onclick={onClickOfSubmitButton}>Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            </div>
-        </template> <!-- Call Not Picked Template End -->
 
 
 
@@ -158,12 +169,12 @@
             <div class="tabset">
                 <lightning-tabset variant="vertical">
                     <lightning-tab label="Category">
-                        <lightning-input type="checkbox" label="New Business"
-                            onclick={oncheckedNewBusiness}></lightning-input>
-                        <lightning-input type="checkbox" label="Existing Customer"
-                            onclick={oncheckedExistingCustomer}></lightning-input>
-                        <lightning-input type="checkbox" label="Partner Referral"
-                            onclick={oncheckedPartnerReferral}></lightning-input>
+                        <lightning-input type="checkbox" label="New Business" onchange={handleCheckboxChange}
+                            checked={NewBusinessCheckBox}></lightning-input>
+                        <lightning-input type="checkbox" label="Existing Customer" onchange={handleCheckboxChange}
+                            checked={ExistingCustomerCheckbox}></lightning-input>
+                        <lightning-input type="checkbox" label="Partner Referral" checked={Partnerreferralcheckbox}
+                            onchange={handleCheckboxChange}></lightning-input>
                         <lightning-input type="checkbox" label="Marketing Campaign"
                             checked={oncheckedMarketingCampaign}></lightning-input>
                         <lightning-input type="checkbox" label="Employee Referral"
@@ -211,6 +222,379 @@
 
         <!-- SCREEN 4 -->
 
+
+
+        <template if:true={ShowRecordsInColumn}>
+            <template for:each={StoreSearchedLeadData} for:item="ld" for:index="index">
+                <div class="bigcontainer" key={ld.Id}>
+                    <header style="background-color: rgb(20, 117, 182);">
+                        <div class="wholediv">
+                            <div class="idheading">
+                                <p>{ld.Id}</p>
+                            </div>
+                            <div class="explaincreation">
+                                <h1>Created on:{ld.CreatedDate} </h1>
+                            </div>
+                        </div>
+                    </header>
+
+                    <lightning-tabset>
+                        <lightning-tab label="Lead Details">
+                            <div class="container">
+                                <div class="wholeststusdiv">
+                                    <div class="status">
+                                        <h1>Status</h1>
+                                    </div>
+                                    <div class="statusdiv">
+                                        <b>{ld.Status__c}</b>
+                                    </div>
+                                </div>
+                                <div class="buttons">
+                                    <div class="sucessbutton">
+                                        <button onclick={onclickintrestedbtn}
+                                            class="slds-button slds-button_success">Intrested</button>
+                                    </div>
+                                    <div class="destrictivebtn">
+                                        <button class="slds-button slds-button_destructive"
+                                            onclick={onclickofrejectbtn}>Reject</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <div class="basicdetailupdate">
+                                <div class="basicdetail">
+                                    <p><b> Basic Details</b></p>
+                                </div>
+                                <div class="update">
+                                    <p>Update</p>
+                                </div>
+                            </div>
+                            <div class="wholename">
+                                <div class="name">
+                                    <h1>Name</h1>
+                                </div>
+                                <div class="inputname">
+                                    <b>{ld.FirstName} {ld.LastName}</b>
+                                </div>
+                            </div>
+                            <div class="icontext">
+                                <div class="wholecontact">
+                                    <div class="contact">
+                                        <h1>Contact</h1>
+                                    </div>
+                                    <div class="inputcontact">
+                                        <b>{ld.Category__c}</b>
+                                    </div>
+                                </div>
+                                <div class="iconwp">
+                                    <img class="imgs" src={wpicon} alt="">
+                                </div>
+                            </div>
+                            <div class="wholeemail">
+                                <div class="Email">
+                                    <h1>Email</h1>
+                                </div>
+                                <div class="inputemail">
+                                    <b>{email}</b>
+                                </div>
+                            </div>
+                            <div class="wholecatagory">
+                                <div class="Email">
+                                    <h1>Category</h1>
+                                </div>
+                                <div class="inputcategory">
+                                    <b>{category} <span>🔥</span></b>
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <div class="projectrequirement">
+                                <div class="proreq">
+                                    <p><b>Project Requirements</b></p>
+                                </div>
+                                <div class="update">
+                                    <p>Update</p>
+                                </div>
+                            </div>
+                            <div class="projname">
+                                <div class="pronm">
+                                    <h1>Project Name</h1>
+                                </div>
+                                <div class="inputproject">
+                                    <b>{ld.LeadSource}</b>
+                                </div>
+                            </div>
+                            <div class="locationss">
+                                <div class="location">
+                                    <h1>Location</h1>
+                                </div>
+                                <div class="inputlocation">
+                                    <b>{ld.MediaType__c}</b>
+                                </div>
+                            </div>
+                            <div class="budgetsss">
+                                <div class="budget">
+                                    <h1>Budget</h1>
+                                </div>
+                                <div class="inputbudget">
+                                    <b>{budget}</b>
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <div class="projectrequirement">
+                                <div class="proreq">
+                                    <p><b>Source Information</b></p>
+                                </div>
+                                <div class="update">
+                                    <p>Update</p>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>Uniques Lead ID</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{uniqueleadid}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>IC Employee ID</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{empid}</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>Campaign</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{campaign}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>Source of Lead</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{sourceoflead}</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>IC Member Name</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{icmembername}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer">
+                                    <div class="heading">
+                                        <h1>IC Team Name</h1>
+                                    </div>
+                                    <div class="output">
+                                        <b>{icteamname}</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <div class="projectrequirement">
+                                <div class="proreq">
+                                    <p><b>Calls</b></p>
+                                </div>
+                            </div>
+                            <div class="container2">
+                                <div class="infocontainer2">
+                                    <div class="heading2">
+                                        <h1>Virtual Number</h1>
+                                    </div>
+                                    <div class="output2">
+                                        <b>{virtualno}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer2">
+                                    <div class="heading2">
+                                        <h1>Call Pulse</h1>
+                                    </div>
+                                    <div class="output2">
+                                        <b>{callpulse}</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container3">
+                                <div class="infocontainer3">
+                                    <div class="heading3">
+                                        <h1>Call From Number</h1>
+                                    </div>
+                                    <div class="output3">
+                                        <b>{callfromno}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer3">
+                                    <div class="heading3">
+                                        <h1>Audio File Available</h1>
+                                    </div>
+                                    <div class="output3">
+                                        <b>{audiofileavailable}</b>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="container4">
+                                <div class="infocontainer4">
+                                    <div class="heading4">
+                                        <h1>Call Start Time</h1>
+                                    </div>
+                                    <div class="output4">
+                                        <b>{callstarttime}</b>
+                                    </div>
+                                </div>
+                                <div class="infocontainer4">
+                                    <div class="heading4">
+                                        <h1>Call End Time</h1>
+                                    </div>
+                                    <div class="output4">
+                                        <b>{callendtime}</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="icontext">
+                                <div class="voicerecord">
+                                    <div class="heading2">
+                                        <h1>Voice Recording URL</h1>
+                                    </div>
+                                    <div class="urldiv">
+                                        <p><b>www.voicerecordinglink.com</b></p>
+                                    </div>
+                                </div>
+                                <div class="iconarrow">
+                                    <img class="imgs" src={arrowicon} alt="">
+                                </div>
+                            </div>
+                        </lightning-tab>
+
+
+                        <lightning-tab label="Activities & Stages">
+                            <p class="upcomingevents"><b>Upcoming Events</b></p>
+                            <div class="firstevent">
+                                <div class="icondiv1">
+                                    <lightning-icon icon-name='standard:account_info' alternative-text='account_info'
+                                        size='medium' title='account_info'></lightning-icon>
+                                </div>
+                                <div class="heading">
+                                    <p><b>June 10, 10:00am</b></p>
+                                    <h3><b>Site Visit</b></h3>
+                                    <p> Shilp Arcedia, Sector 63, Noida</p>
+                                </div>
+                            </div>
+                            <div class="firstevent">
+                                <div class="icondiv1">
+                                    <lightning-icon icon-name='action:call' alternative-text='call' size='small'
+                                        title='call'></lightning-icon>
+                                </div>
+                                <div class="heading">
+                                    <p><b>June 10, 10:00am - 10:30am</b></p>
+                                    <h3><b>Follow up</b></h3>
+                                    <p> Shilp Arcedia, Sector 63, Noida</p>
+                                </div>
+                            </div>
+                            <hr style="border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <p class="upcomingevents"><b>Past Events</b></p>
+                            <div class="allnodiv">
+                                <div class="sitevisit">
+                                    <h5 class="sitevisit1"><b>{sitevisits}</b></h5>
+                                    <p class="upcomingevents"><b>Site Visits</b></p>
+                                </div>
+                                <div class="Followups">
+                                    <h5 class="Followups1"><b>{followups}</b></h5>
+                                    <p class="upcomingevents"><b>Follow Ups</b></p>
+                                </div>
+                                <div class="facetoface">
+                                    <h5 class="facetoface1"><b>{facetoface}</b></h5>
+                                    <p class="upcomingevents"><b>Face to face</b></p>
+                                </div>
+                            </div>
+                            <hr style=" margin-top:10px; border-top: 1px solid #ccc; margin-top: 7px;margin-bottom:2px">
+                            <h1 class="pasthistory"><b> View All Past History</b></h1>
+                            <div class="lastbutton">
+                                <button onclick={Reschedulecalll} class="buttonupdate">Reschedule Call</button>
+                            </div>
+                        </lightning-tab>
+                    </lightning-tabset>
+                </div>
+            </template>
+        </template>
+
+
+        <!-- Reject Template Model -->
+        <template if:true={ShowRejectReason}>
+            <section role="dialog" tabindex="-1" aria-modal="true"
+                aria-label="Meaningful description of the modal content" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <h1 style="align-items: center;"><b> Reject Reason</b></h1>
+
+                    <lightning-combobox name="progress" label="Rejection Category" value={RejectionCategory}
+                        placeholder="Select Category" options={RejectionCategoryOptions}
+                        onchange={onchangeRejectionCategory}></lightning-combobox>
+
+                    <lightning-combobox name="progress" label="Rejection Reason" value={RejectionReason}
+                        placeholder="Select Reason" options={RejectionReasonOptions}
+                        onchange={onchangeRejectionReason}></lightning-combobox>
+
+                    <button class="buttonupdate" onclick={handleUpdateReasonButton}>Update</button>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+
+
+
+
+        <template if:true={MarkLeadAsIntrestedTemplate}>
+            <div class="leadintrested">
+                <h1 class="headlead"><b>Mark Lead as Intrested</b></h1>
+                <lightning-select label="Buying Time Frame" value={StoreBuyingtimeframevalue}
+                    options={Buyingtimeframeoptions} onchange={handleChangeBuyingtimeframevalue}></lightning-select>
+
+                <lightning-select label="Budget" value={StoreBudgetValue} options={Budgetoptions}
+                    onchange={handleChangeBudgetValue}></lightning-select>
+
+                <lightning-select label="Property Type" value={StorePropertytypeValue} options={PropertyTypeoptions}
+                    onchange={handleChangePropertytypeValue}></lightning-select>
+
+                <lightning-select label="Location" value={StoreLocationValue} options={Locationoptions}
+                    onchange={handleChangeLocationValue}></lightning-select>
+
+                <lightning-select label="Call Action" required value={StoreCallActionValue} options={CallActionoptions}
+                    onchange={handleChangeCallActionValue}></lightning-select>
+
+                <lightning-select label="Meeting Location" value={StoreMeetingLocationValue}
+                    options={MeetingLocationoptions} onchange={handleChangeMeetingLocationValue}></lightning-select>
+
+                <lightning-select label="Ic Office" value={StoreIcOfficeValue} options={IcOfficeoptions}
+                    onchange={handleChangeIcOfficeValue}></lightning-select>
+
+                <!-- <lightning-input type="datetime" label="Start Date" required
+                    value="2020-09-12T18:13:41Z"></lightning-input>
+
+                <lightning-input type="datetime" label="End Date" required
+                    value="2020-09-12T18:13:41Z"></lightning-input> -->
+
+                <div class="buttonintrested">
+                    <lightning-button variant="base" label="Cancle"
+                        onclick={handleCancleLeadIntrested}></lightning-button>
+
+                    <lightning-button variant="brand" label="Move To Prospect"
+                        onclick={handleMoveToPropspectLead}></lightning-button>
+                </div>
+            </div>
+
+        </template>
 
     </lightning-card>
 
