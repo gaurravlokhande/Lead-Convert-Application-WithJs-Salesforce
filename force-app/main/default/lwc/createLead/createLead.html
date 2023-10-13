@@ -58,17 +58,18 @@
                     </div>
                     <div class="details">
                         <h3 onclick={OnClickOfLeadId}><b>{lead.Id}</b></h3>
-                        <h1 data-id={lead.Id} onclick={onclickFirstAndLastName}>{lead.FirstName} {lead.LastName}</h1>
+                        <h1 data-id={lead.Id} value={storefirstnamelastnamevalue} onclick={onclickFirstAndLastName}>
+                            {lead.FirstName} {lead.LastName}</h1>
                         <h1>{lead.Category__c}</h1>
                         <h1>{lead.CreatedDate}</h1>
                         <h1><b>Message / Query:</b> I am looking for 2 BHk Flat...</h1>
                     </div>
                     <div class="fire-icon">
-                        <span class="icon" key={lead.Id}>🔥</span>
+                        <span class="icon">🔥</span>
                     </div>
                     <div class="smsicon">
-                        <span class="icon" key={lead.Id}>
-                            <h1 style="background-color: yellow;">SMS</h1>
+                        <span class="icon">
+                            <h1 style="background-color: yellow;">SMS</h1> <!-- {lead.Status__c} -->
                         </span>
                     </div>
                 </div>
@@ -573,17 +574,20 @@
                 <lightning-select label="Call Action" required value={StoreCallActionValue} options={CallActionoptions}
                     onchange={handleChangeCallActionValue}></lightning-select>
 
-                <lightning-select label="Meeting Location" value={StoreMeetingLocationValue}
-                    options={MeetingLocationoptions} onchange={handleChangeMeetingLocationValue}></lightning-select>
+                <template if:true={CallActionequalsMeeting}>
+                    <lightning-select label="Meeting Location" value={StoreMeetingLocationValue}
+                        options={MeetingLocationoptions} onchange={handleChangeMeetingLocationValue}></lightning-select>
 
-                <lightning-select label="Ic Office" value={StoreIcOfficeValue} options={IcOfficeoptions}
-                    onchange={handleChangeIcOfficeValue}></lightning-select>
+                    <lightning-select label="Ic Office" value={StoreIcOfficeValue} options={IcOfficeoptions}
+                        onchange={handleChangeIcOfficeValue}></lightning-select>
 
-                <!-- <lightning-input type="datetime" label="Start Date" required
-                    value="2020-09-12T18:13:41Z"></lightning-input>
 
-                <lightning-input type="datetime" label="End Date" required
-                    value="2020-09-12T18:13:41Z"></lightning-input> -->
+                    <lightning-input type="datetime" label="Start Date" required
+                        value="2020-09-12T18:13:41Z"></lightning-input>
+
+                    <lightning-input type="datetime" label="End Date" required
+                        value="2020-09-12T18:13:41Z"></lightning-input>
+                </template>
 
                 <div class="buttonintrested">
                     <lightning-button variant="base" label="Cancle"
@@ -593,6 +597,8 @@
                         onclick={handleMoveToPropspectLead}></lightning-button>
                 </div>
             </div>
+
+
 
         </template>
 

@@ -211,9 +211,17 @@ export default class CreateLead extends NavigationMixin(LightningElement) {
     }
 
 
+    @track storefirstnamelastnamevalue = '';
+
 
     // Record Page Navigation Screen 2 
       onclickFirstAndLastName(event) {
+
+        this.storefirstnamelastnamevalue = event.target.value;
+
+
+
+
 
         const recordId = event.currentTarget.dataset.id;
 
@@ -486,7 +494,7 @@ get CallActionoptions() {
         { label: 'Call immediately', value: 'immediate' },
         { label: 'Call within 24 hours', value: '24hours' },
         { label: 'Call within 48 hours', value: '48hours' },
-        { label: 'No call required', value: 'nocall' },
+        { label: 'Meeting', value: 'Meeting' },
     ];
 }
 
@@ -509,13 +517,7 @@ get IcOfficeoptions() {
 
 
 
-
-
-    @track StoreLabelofLead;
-    
-
-
-
+    @track CallActionequalsMeeting = false;
 
     @track StoreBuyingtimeframevalue = '';
     @track StoreBudgetValue = '';
@@ -543,7 +545,13 @@ get IcOfficeoptions() {
     }
 
     handleChangeCallActionValue(event) {
-       this.StoreCallActionValue = event.target.value;
+        this.StoreCallActionValue = event.target.value;
+        
+        if (this.StoreCallActionValue ==='Meeting') {
+            this.CallActionequalsMeeting = true;
+        } else if (this.StoreCallActionValue !== 'Meeting') {
+            this.CallActionequalsMeeting = false;
+        }
     }
 
     handleChangeMeetingLocationValue(event){
@@ -609,6 +617,8 @@ get IcOfficeoptions() {
     this.StoreMeetingLocationValue = '';
     this.StoreIcOfficeValue = '';
     }
+
+    
 
 }
 

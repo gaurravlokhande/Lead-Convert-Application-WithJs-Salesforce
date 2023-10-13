@@ -127,7 +127,7 @@ select {
     margin-left: 20px;
 }
 .smsicon{
-    margin-right: 15px;
+    margin-right: 18px;
 }
 .slds-box{
     display: flex;
@@ -449,8 +449,6 @@ margin-top: 10px;
     display: flex;
     justify-content: space-between;
 }
-
-
 
 /*                 */
 .headlead{
