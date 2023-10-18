@@ -76,8 +76,8 @@
                 <div class="slds-box slds-box_xx-small" key={lead.Id}>
                     <lightning-icon icon-name='utility:note' alternative-text='note' variant='error' size='small'
                         title='note' onclick={onClickOfNoteIcon}></lightning-icon>
-                    <lightning-icon icon-name='utility:event' alternative-text='event' size='small'
-                        title='event'></lightning-icon>
+                    <lightning-icon icon-name='utility:event' alternative-text='event' size='small' title='event'
+                        onclick={onclickofcalenderbutton}></lightning-icon>
                     <lightning-icon icon-name='utility:anywhere_chat' alternative-text='anywhere_chat' size='small'
                         title='anywhere_chat'></lightning-icon>
                     <lightning-icon icon-name='utility:call' alternative-text='call' size='small' title='call'
@@ -172,10 +172,13 @@
                     <lightning-tab label="Category">
                         <lightning-input type="checkbox" label="New Business" onchange={handleCheckboxChange}
                             checked={NewBusinessCheckBox}></lightning-input>
+
                         <lightning-input type="checkbox" label="Existing Customer" onchange={handleCheckboxChange}
                             checked={ExistingCustomerCheckbox}></lightning-input>
+
                         <lightning-input type="checkbox" label="Partner Referral" checked={Partnerreferralcheckbox}
                             onchange={handleCheckboxChange}></lightning-input>
+
                         <lightning-input type="checkbox" label="Marketing Campaign"
                             checked={oncheckedMarketingCampaign}></lightning-input>
                         <lightning-input type="checkbox" label="Employee Referral"
@@ -559,6 +562,7 @@
         <template if:true={MarkLeadAsIntrestedTemplate}>
             <div class="leadintrested">
                 <h1 class="headlead"><b>Mark Lead as Intrested</b></h1>
+
                 <lightning-select label="Buying Time Frame" value={StoreBuyingtimeframevalue}
                     options={Buyingtimeframeoptions} onchange={handleChangeBuyingtimeframevalue}></lightning-select>
 
@@ -574,19 +578,25 @@
                 <lightning-select label="Call Action" required value={StoreCallActionValue} options={CallActionoptions}
                     onchange={handleChangeCallActionValue}></lightning-select>
 
+                <template if:true={ShowDueDate}>
+                    <lightning-input type="date" label="Due Date" onchange={handleChangeOfDueDate}
+                        value={StoreDuedatevalue}></lightning-input>
+                </template>
+
+
                 <template if:true={CallActionequalsMeeting}>
-                    <lightning-select label="Meeting Location" value={StoreMeetingLocationValue}
+                    <lightning-select label="Meeting Location" required value={StoreMeetingLocationValue}
                         options={MeetingLocationoptions} onchange={handleChangeMeetingLocationValue}></lightning-select>
 
-                    <lightning-select label="Ic Office" value={StoreIcOfficeValue} options={IcOfficeoptions}
+                    <lightning-select label="Ic Office" required value={StoreIcOfficeValue} options={IcOfficeoptions}
                         onchange={handleChangeIcOfficeValue}></lightning-select>
 
 
-                    <lightning-input type="datetime" label="Start Date" required
-                        value="2020-09-12T18:13:41Z"></lightning-input>
+                    <lightning-input type="datetime" label="Start Date" onchange={handleStartDate} required
+                        value={startDate}></lightning-input>
 
-                    <lightning-input type="datetime" label="End Date" required
-                        value="2020-09-12T18:13:41Z"></lightning-input>
+                    <lightning-input type="datetime" label="End Date" onchange={handleEndDate} required
+                        value={endDate}></lightning-input>
                 </template>
 
                 <div class="buttonintrested">
@@ -597,9 +607,13 @@
                         onclick={handleMoveToPropspectLead}></lightning-button>
                 </div>
             </div>
+        </template>
 
 
-
+        <!-- fOR TESTING PURPOSE   -->
+        <template if:true={OnShowRecordEditForm}>
+            <!--  -->
+            <lightning-button variant="base" label="Button Label" onclick={handleClick}></lightning-button>
         </template>
 
     </lightning-card>

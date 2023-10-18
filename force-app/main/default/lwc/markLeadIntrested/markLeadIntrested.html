@@ -1,0 +1,57 @@
+<template>
+    <lightning-card title="Mark Lead Interested">
+        <div class="slds-box slds-box_xx-small">
+
+
+            <lightning-select label="Buying Time Frame" value={BTFvalue} options={buyongtimeframeoptions}
+                onchange={handleChangeBTF}></lightning-select>
+            <lightning-select label="Property Type" value={PTvalue} options={propertytypeoptions}
+                onchange={handleChangePT}></lightning-select>
+            <lightning-select label="Location" value={Lvalue} options={locationoptions}
+                onchange={handleChangeL}></lightning-select>
+            <lightning-select label="Call Action" value={CAvalue} options={callactionoptions}
+                onchange={handleChangeCA}></lightning-select>
+
+            <template if:true={duedateTemplate}>
+                <lightning-input type="date" onchange={handleChangeDD} value={DDvalue}
+                    label="Due Date"></lightning-input>
+            </template>
+
+            <template if:true={meetingTemplate}>
+                <lightning-select label="Meeting Location" value={MLvalue} options={meetinglocationoptions}
+                    onchange={handleChangeML}></lightning-select>
+
+                <lightning-select label="IC Office" value={ICOvalue} options={icofficeoptions}
+                    onchange={handleChangeICO}></lightning-select>
+
+                <lightning-input type="datetime" value={SDvalue} onchange={handleChangeSD}
+                    label="Start Date"></lightning-input>
+
+                <lightning-input type="datetime" value={EDvalue} onchange={handleChangeED}
+                    label="End Date"></lightning-input>
+
+            </template>
+
+            <div class="buttons">
+                <lightning-button variant="brand" label="Cancel" onclick={handleClickCancel}></lightning-button>
+                <lightning-button variant="brand" label="Move to Prospect"
+                    onclick={handleClickMoveToProspect}></lightning-button>
+            </div>
+
+        </div>
+
+
+        <template if:true={showworsttemp}>
+            <template for:each={matchedData} for:item="acc" for:index="index">
+
+                <li key={acc.Id}>
+                    <h1 data-id={acc.Id}>{acc.Id}</h1>
+                    <h1>{acc.Name}</h1>
+                    ''
+                </li>
+            </template>
+        </template>
+
+
+    </lightning-card>
+</template>
